@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>快捷日历提醒 · 愉悦版</title>
+  <title>快捷日历提醒 · 触控友好版</title>
 
   <!-- Google Fonts (optional, improves visual) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -151,6 +151,21 @@
     /* larger tap targets on mobile */
     input, textarea, button, a, select { touch-action:manipulation; }
     button.btn{min-height:48px}
+
+    /* Add-to-Home Overlay/Modal */
+    .a2hs-overlay{
+      position:fixed;inset:0;background:rgba(10,12,20,0.6);display:none;align-items:center;justify-content:center;z-index:9998;padding:20px;
+    }
+    .a2hs-card{
+      max-width:520px;width:100%;background:#fff;padding:18px;border-radius:12px;box-shadow:0 18px 40px rgba(2,6,23,0.4);
+      color:#061226;
+    }
+    .a2hs-card h3{margin-top:0}
+    .a2hs-steps{display:flex;gap:12px;flex-direction:column}
+    .a2hs-step{display:flex;gap:12px;align-items:flex-start}
+    .a2hs-ico{width:46px;height:46px;border-radius:10px;background:linear-gradient(180deg,#f7f9ff,#fff);display:flex;align-items:center;justify-content:center;color:var(--primary);font-weight:700}
+    .a2hs-close{background:transparent;border:0;color:var(--muted);font-weight:700;padding:8px 10px;border-radius:8px;cursor:pointer}
+    .a2hs-tip{font-size:13px;color:var(--muted)}
   </style>
 </head>
 <body>
@@ -159,7 +174,7 @@
       <div class="logo" aria-hidden="true">R</div>
       <div>
         <h1>快捷日历提醒 · 触控友好版</h1>
-        <p class="lead">填写事件，生成可下载的 .ics 文件并提供 Google 日历 打开链接。支持移动端分享（若设备支持）。</p>
+        <p class="lead">填写事件，生成可下载的 .ics 文件并提供 Google 日历 打开链接。支持移动端分享与“添加到主屏幕”指引。</p>
       </div>
     </header>
 
@@ -205,7 +220,7 @@
                 <input id="autoDownload" type="checkbox" checked /> 自动下载 .ics
               </label>
               <div class="small muted" style="margin-top:8px">
-                如果浏览器阻止自动下载，你可以手动点击下面的“下载 .ics”按钮。
+                如果浏览器阻���自动下载，你可以手动点击下面的“下载 .ics”按钮。
               </div>
             </div>
 
@@ -213,7 +228,6 @@
               <label class="small">快速操作</label>
               <div class="controls">
                 <button id="generate" class="btn" type="button" aria-label="生成并下载提醒">
-                  <!-- svg plus -->
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                   生成提醒
                 </button>
@@ -225,6 +239,11 @@
                 <button id="shareBtn" class="btn secondary" type="button" aria-label="分享事件" style="display:none">
                   分享（设备支持时显示）
                 </button>
+
+                <!-- 新增：添加到主屏幕按钮 -->
+                <button id="addToHomeBtn" class="btn secondary" type="button" aria-label="添加到主屏幕">
+                  添加到主屏幕
+                </button>
               </div>
             </div>
 
@@ -235,7 +254,7 @@
             </div>
 
             <div class="notice">
-              提示：.ics 文件可导入 Apple 日历、Outlook、部分安卓日历应用。Google 日历会打开预填事件页面，请在 Google 页面上保存以完成添加。
+              提示：.ics 文件可导入 Apple 日历、Outlook、部分安卓日历应用。Google 日历会打开预填事件页面，请在 Google 页面上保存以完成添加。想让“添加到主屏幕”弹窗自动出现，请将页面部署为 PWA（需 manifest + service worker + HTTPS）。
             </div>
 
             <div style="display:flex;gap:8px;align-items:center;justify-content:flex-start">
@@ -252,6 +271,47 @@
 
       <footer class="attribution">由快捷提醒生成器 · 触控版 编写 • 直接保存为 <code>index.html</code> 后打开即可</footer>
     </main>
+  </div>
+
+  <!-- Add-to-Home Overlay (iOS instructions and general fallback) -->
+  <div id="a2hsOverlay" class="a2hs-overlay" role="dialog" aria-modal="true" style="display:none">
+    <div class="a2hs-card" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>添加到主屏幕</h3>
+        <button class="a2hs-close" id="a2hsClose">关闭 ✕</button>
+      </div>
+      <p class="a2hs-tip">请选择下面与你的浏览器相符的操作：</p>
+
+      <div class="a2hs-steps">
+        <div class="a2hs-step">
+          <div class="a2hs-ico">1</div>
+          <div>
+            <strong>iPhone / iPad (Safari)</strong>
+            <div class="a2hs-tip">请点击底部的“分享”按钮（方框带向上箭头）→ 向下滑动找到“添加到主屏幕”并点击 → 然后确认添加。</div>
+          </div>
+        </div>
+
+        <div class="a2hs-step">
+          <div class="a2hs-ico">2</div>
+          <div>
+            <strong>Android (Chrome)</strong>
+            <div class="a2hs-tip">在地址栏右侧菜单（三点）中选择“添加到主屏幕”或“安装应用”。若页面作为 PWA 部署并满足条件，Chrome 会显示“安装”提示。</div>
+          </div>
+        </div>
+
+        <div class="a2hs-step">
+          <div class="a2hs-ico">3</div>
+          <div>
+            <strong>桌面浏览器</strong>
+            <div class="a2hs-tip">你可以将页面收藏，或在支持 PWA 的浏览器中使用“安装”功能（地址栏有安装图标）。</div>
+          </div>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button id="a2hsGotIt" class="btn secondary">知道了</button>
+      </div>
+    </div>
   </div>
 
 <script>
@@ -273,7 +333,6 @@ function showToast(msg, ms=2200){
 }
 
 /* Elements */
-const form = document.getElementById('reminderForm');
 const titleEl = document.getElementById('title');
 const startEl = document.getElementById('start');
 const endEl = document.getElementById('end');
@@ -284,16 +343,22 @@ const autoDownloadEl = document.getElementById('autoDownload');
 const generateBtn = document.getElementById('generate');
 const downloadBtn = document.getElementById('downloadBtn');
 const shareBtn = document.getElementById('shareBtn');
+const addToHomeBtn = document.getElementById('addToHomeBtn');
 const linksArea = document.getElementById('linksArea');
 const resultDiv = document.getElementById('result');
 const summaryText = document.getElementById('summaryText');
 const addRRULE = document.getElementById('addRRULE');
 const clearBtn = document.getElementById('clearBtn');
 
+const a2hsOverlay = document.getElementById('a2hsOverlay');
+const a2hsClose = document.getElementById('a2hsClose');
+const a2hsGotIt = document.getElementById('a2hsGotIt');
+
 let lastBlobUrl = null;
 let lastBlobFile = null;
 let lastGoogleUrl = null;
 let currentRRULE = ''; // for future extension
+let deferredPrompt = null; // for beforeinstallprompt
 
 /* Defaults: set start to next hour rounded */
 (function setDefaultStart(){
@@ -356,7 +421,6 @@ function createBlobAndLinks(icsContent, filename, title){
   a.setAttribute('title','点击下载 .ics（若自动下载被禁用，可在此手动下载）');
 
   // prepare google link
-  // Use UTC strings for google
   const startUTC = toUTCStringForGoogle(currentData.startDate);
   const endUTC = toUTCStringForGoogle(currentData.endDate);
   const gTitle = encodeURIComponent(currentData.title);
@@ -381,7 +445,7 @@ function createBlobAndLinks(icsContent, filename, title){
     try{
       await navigator.clipboard.writeText(lastGoogleUrl);
       showToast('已复制 Google 日历 链接');
-    }catch(e){ alert('复制失败，请手动复制链接'); }
+    }catch(e){ alert('复制失败，请手动复制���接'); }
   });
 
   // share button visibility
@@ -459,6 +523,76 @@ shareBtn.addEventListener('click', async ()=>{
   }
 });
 
+/* Add-to-Home handling */
+/* Detect iOS / Safari */
+function isIos() {
+  return /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+}
+function isInStandaloneMode() {
+  return (window.navigator.standalone === true) || window.matchMedia('(display-mode: standalone)').matches;
+}
+
+/* beforeinstallprompt: Android/Chromium install prompt */
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent the mini-infobar from appearing on mobile
+  e.preventDefault();
+  deferredPrompt = e;
+  // show hint to user (we'll show overlay when button clicked)
+  // Optionally mark button as actionable
+  addToHomeBtn.style.display = 'inline-flex';
+  addToHomeBtn.textContent = '安装 / 添加到主屏幕';
+});
+
+/* If already installed or in standalone, hide button */
+if (isInStandaloneMode()) {
+  addToHomeBtn.style.display = 'none';
+}
+
+/* Button click behavior:
+   - If deferredPrompt available (Chrome), call prompt()
+   - Else if iOS Safari -> show overlay with instructions
+   - Else -> show overlay with generic instructions
+*/
+addToHomeBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    try {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        showToast('已添加（或开始安装）');
+      } else {
+        showToast('取消安装');
+      }
+      deferredPrompt = null;
+      addToHomeBtn.style.display = 'none';
+    } catch (err) {
+      console.error(err);
+      showA2HSOverlay();
+    }
+  } else {
+    // no beforeinstallprompt available -> show instructions
+    showA2HSOverlay();
+  }
+});
+
+function showA2HSOverlay(){
+  a2hsOverlay.style.display = 'flex';
+}
+function hideA2HSOverlay(){
+  a2hsOverlay.style.display = 'none';
+}
+a2hsClose.addEventListener('click', hideA2HSOverlay);
+a2hsGotIt.addEventListener('click', hideA2HSOverlay);
+
+/* Show a subtle hint to iOS users (if not in standalone) */
+window.addEventListener('load', () => {
+  if (isIos() && !isInStandaloneMode()) {
+    // show button (visible) so user can see instruction
+    addToHomeBtn.style.display = 'inline-flex';
+    addToHomeBtn.textContent = '添加到主屏幕';
+  }
+});
+
 /* RRULE quick example: add daily repetition for 3 occurrences */
 addRRULE.addEventListener('click', ()=>{
   // Example: daily repeat 7 times
@@ -479,17 +613,6 @@ clearBtn.addEventListener('click', ()=>{
   resultDiv.style.display = 'none';
   showToast('已清空');
 });
-
-/* small helper: keep default start function available for reset */
-function setDefaultStart(){
-  const now = new Date();
-  now.setMinutes(0,0,0);
-  now.setHours(now.getHours()+1);
-  const s = now.toISOString().slice(0,16);
-  startEl.value = s;
-  const end = new Date(now.getTime() + 60*60*1000);
-  endEl.value = end.toISOString().slice(0,16);
-}
 
 /* Accessibility / keyboard: Enter on title triggers generate */
 titleEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ generateBtn.click(); e.preventDefault(); } });
