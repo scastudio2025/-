@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电竞先锋 | 数字产品专卖</title>
+    <style>
+        /* 基础电竞暗黑风格设置 */
+        body {
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 顶部导航栏 & 招牌标题 */
+        header {
+            background-color: #1f2833;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #66fcf1; /* 荧光青色描边 */
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.2);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: #45a29e;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0b0c10;
+        }
+
+        .site-title {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .site-title span {
+            color: #66fcf1; /* 强调色 */
+        }
+
+        /* 页面主体内容 */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            border-left: 4px solid #66fcf1;
+            padding-left: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* 产品展示网格 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* 单个产品卡片 */
+        .product-card {
+            background-color: #1f2833;
+            border: 1px solid #2a3644;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #66fcf1;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.4);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(45deg, #1a202c, #2d3748);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #45a29e;
+            font-size: 14px;
+            border: 1px dashed #45a29e;
+        }
+
+        .product-title {
+            font-size: 18px;
+            color: #ffffff;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .product-price {
+            font-size: 22px;
+            color: #66fcf1;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        /* 购买按钮 */
+        .buy-btn {
+            background-color: transparent;
+            color: #66fcf1;
+            border: 2px solid #66fcf1;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .buy-btn:hover {
+            background-color: #66fcf1;
+            color: #0b0c10;
+            box-shadow: 0 0 10px #66fcf1;
+        }
+
+        /* 底部信息 */
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #45a29e;
+            margin-top: 50px;
+            border-top: 1px solid #1f2833;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <div class="logo-placeholder">LOGO</div>
+            <div class="site-title">电竞<span>先锋</span></div>
+        </div>
+        <div style="color: #45a29e;">欢迎，玩家</div>
+    </header>
+
+    <div class="container">
+        <div class="section-title">热门数字产品</div>
+        
+        <div class="product-grid">
+            
+            <div class="product-card">
+                <div class="product-image">（产品图片替换区）<br>例如：Steam 充值卡</div>
+                <div class="product-title">Steam $50 充值卡兑换码</div>
+                <div class="product-price">¥ 345.00</div>
+                <button class="buy-btn" onclick="checkout('Steam $50 充值卡')">立即购买</button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">（产品图片替换区）<br>例如：电竞直播HUD特效</div>
+                <div class="product-title">赛博朋克风 直播推流素材包</div>
+                <div class="product-price">¥ 88.00</div>
+                <button class="buy-btn" onclick="checkout('直播推流素材包')">立即购买</button>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image">（产品图片替换区）<br>例如：游戏激活码</div>
+                <div class="product-title">《某电竞大作》豪华版 CD-KEY</div>
+                <div class="product-price">¥ 298.00</div>
+                <button class="buy-btn" onclick="checkout('豪华版 CD-KEY')">立即购买</button>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 电竞先锋 数字商城. 接入独立收款系统预留位.
+    </footer>
+
+    <script>
+        function checkout(productName) {
+            // 这里是以后对接你自己的"收款平台"的地方
+            alert("系统提示：正在为您创建【" + productName + "】的订单...\n\n(这里后续将跳转到您的独立收款平台！)");
+        }
+    </script>
+</body>
+</html>
